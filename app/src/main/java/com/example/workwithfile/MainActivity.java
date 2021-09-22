@@ -2,6 +2,7 @@ package com.example.workwithfile;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,7 +21,7 @@ import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public final static String FILE_NAME = "note.txt";
-    public final static String FILE_PATH = "/sdcard/Demo/";
+    public final static String FILE_PATH = "/SDCARD/Demo/";
 
     EditText edText;
     Button btSave;
@@ -37,6 +40,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btSave.setOnClickListener(this);
         btRead.setOnClickListener(this);
+
+        permission();
+    }
+
+    //Xin cap quyen ghi bo nho ngoai android 6+
+    @SuppressLint("CheckResult")
+    private void permission() {
+        final RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(granted -> {
+                    if (granted) { // Always true pre-M
+                        // I can control the camera now
+                    } else {
+                        // Oups permission denied
+                    }
+                });
     }
 
     private void onSaveInternal() {
